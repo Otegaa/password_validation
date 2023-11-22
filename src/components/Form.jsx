@@ -53,7 +53,7 @@ const Form = ({ onValidate }) => {
         <StyledInput
           type={!showPassword ? 'password' : 'text'}
           placeholder="Input your password"
-          onChange={(e) => onValidate(e.target.value)}
+          onInput={(e) => onValidate(e.target.value)}
         />
         <Icons onClick={handleShowPassword}>
           {showPassword ? <PiEyeLight /> : <PiEyeSlash />}
