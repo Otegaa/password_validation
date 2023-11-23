@@ -7,8 +7,17 @@ export const findDataOptions = {
 };
 
 export const findData = async (url, options) => {
-  const res = await fetch(url, options);
-  const data = res.json();
+  try {
+    const res = await fetch(url, options);
+    const data = await res.json();
 
-  return data;
+    if (data.success === false) {
+      return false;
+    } else {
+      return true;
+    }
+  } catch (error) {
+    console.error('Error checking word:', error);
+    return false;
+  }
 };

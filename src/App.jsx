@@ -5,6 +5,7 @@ import Form from './components/Form';
 import PasswordTracker from './components/PasswordTracker';
 import { useEffect, useState } from 'react';
 import { findData, findDataOptions } from './utils/findData';
+import { extractCharactersBeforeFirstDigit } from './utils/checkFirstChar';
 
 const StyledApp = styled.main`
   max-width: 50rem;
@@ -28,20 +29,15 @@ const App = () => {
   const [lengthPassword, setLengthPassword] = useState(false);
   const [letterPassword, setLetterPassword] = useState(false);
   const [digitPassword, setDigitPassword] = useState(false);
-  const [wordCheckPassword, setWordCheckPassword] = useState(false);
+  const [wordCheckPassword, setWordCheckPassword] = useState(true);
   const [inputValue, setInputValue] = useState('');
 
   const getEnglishWordCheck = async (word) => {
     const wordsApiUrl = `https://wordsapiv1.p.rapidapi.com/words/${word}/typeOf`;
+    const data = await findData(wordsApiUrl, findDataOptions);
+    // console.log(data);
 
-    try {
-      const data = await findData(wordsApiUrl, findDataOptions);
-
-      return !(data.typeOf && data.typeOf.length > 0);
-    } catch (error) {
-      console.error('Error checking word:', error);
-      return false;
-    }
+    return data;
   };
 
   useEffect(() => {
@@ -57,20 +53,32 @@ const App = () => {
 
       if (inputValue.length >= 3) {
         // Check if the entire password is an English word
-        const isEnglishWord = await getEnglishWordCheck(inputValue);
+        const word = extractCharactersBeforeFirstDigit(inputValue);
+        console.log(word);
+        // const digitWord = await getEnglishWordCheck(word);
+        const isEnglishWord =
+          word.length >= 3 ? await getEnglishWordCheck(inputValue) : false;
         console.log(isEnglishWord);
 
+        // else if (digitWord) {
+        //   setWordCheckPassword(false);
+        // }
+
         if (isEnglishWord) {
-          // If the password starts with a valid English word, set wordCheckPassword to true
+          // If the password starts with a valid English word, set wordCheckPassword to false
           console.log('Setting wordCheckPassword to true');
-          setWordCheckPassword(true);
+          setWordCheckPassword(false);
         } else {
-          // If the password doesn't start with a valid English word and doesn't contain a digit, set wordCheckPassword to false
+          // If the password doesn't start with a valid English word and doesn't contain a digit, set wordCheckPassword to true
           console.log(
             'Setting wordCheckPassword to false instead of true, it is checked'
           );
-          setWordCheckPassword(false);
+          setWordCheckPassword(true);
         }
+      }
+
+      if (inputValue.length < 1) {
+        setWordCheckPassword(true);
       }
     };
 

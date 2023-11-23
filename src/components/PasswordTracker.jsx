@@ -52,10 +52,10 @@ const PasswordTracker = ({
         </StyledListItem>
         <StyledListItem $isValid={wordCheckPassword}>
           <StyledIcons>
-            {wordCheckPassword ? (
-              <ImCheckboxChecked />
-            ) : (
+            {!wordCheckPassword ? (
               <ImCheckboxUnchecked />
+            ) : (
+              <ImCheckboxChecked />
             )}
           </StyledIcons>
           Not contain full English words
