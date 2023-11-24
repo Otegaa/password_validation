@@ -6,9 +6,12 @@ export const findDataOptions = {
   },
 };
 
-export const findData = async (url, options) => {
+export const findData = async (url, options, signal) => {
   try {
-    const res = await fetch(url, options);
+    const res = await fetch(url, {
+      ...options,
+      signal,
+    });
     const data = await res.json();
 
     if (data.success === false) {

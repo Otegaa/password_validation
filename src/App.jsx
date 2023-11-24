@@ -32,15 +32,17 @@ const App = () => {
   const [wordCheckPassword, setWordCheckPassword] = useState(true);
   const [inputValue, setInputValue] = useState('');
 
-  const getEnglishWordCheck = async (word) => {
+  const getEnglishWordCheck = async (word, signal) => {
     const wordsApiUrl = `https://wordsapiv1.p.rapidapi.com/words/${word}/typeOf`;
-    const data = await findData(wordsApiUrl, findDataOptions);
-    // console.log(data);
+    const data = await findData(wordsApiUrl, findDataOptions, signal);
 
     return data;
   };
 
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const validatePassword = async () => {
       // regex validations
       const lengthValid = /^(.{8,16})$/;
@@ -57,7 +59,9 @@ const App = () => {
         console.log(word);
         // const digitWord = await getEnglishWordCheck(word);
         const isEnglishWord =
-          word.length >= 3 ? await getEnglishWordCheck(inputValue) : false;
+          word.length >= 3
+            ? await getEnglishWordCheck(inputValue, signal)
+            : false;
         console.log(isEnglishWord);
 
         // else if (digitWord) {
@@ -83,6 +87,10 @@ const App = () => {
     };
 
     validatePassword();
+
+    return () => {
+      controller.abort();
+    };
   }, [inputValue]);
 
   const handleValidatePassword = (val) => {
