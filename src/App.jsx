@@ -1,9 +1,12 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+
 import GlobalStyles from './styles/GlobalStyles';
 import Heading from './components/Heading';
 import Form from './components/Form';
+import Button from './components/Button';
 import PasswordTracker from './components/PasswordTracker';
-import { useEffect, useState } from 'react';
+
 import { findData, findDataOptions } from './utils/findData';
 import { checkFirstChars } from './utils/checkFirstChar';
 
@@ -54,6 +57,7 @@ const App = () => {
       setDigitPassword(containsDigit.test(inputValue));
 
       if (inputValue.length >= 3) {
+        // check if the input contains digit
         const wordBeforeDigit = checkFirstChars(inputValue);
 
         const [isEnglishWord, isWordBeforeDigitEnglish] = await Promise.all([
@@ -65,10 +69,8 @@ const App = () => {
           isEnglishWord ||
           (isWordBeforeDigitEnglish && wordBeforeDigit.length >= 3)
         ) {
-          console.log('Setting wordCheckPassword to false');
           setWordCheckPassword(false);
         } else {
-          console.log('Setting wordCheckPassword to true');
           setWordCheckPassword(true);
         }
       }
@@ -97,6 +99,13 @@ const App = () => {
           <Heading />
           <Form onValidate={handleValidatePassword} />
           <PasswordTracker
+            lengthPassword={lengthPassword}
+            letterPassword={letterPassword}
+            digitPassword={digitPassword}
+            wordCheckPassword={wordCheckPassword}
+          />
+          <Button
+            inputValue={inputValue}
             lengthPassword={lengthPassword}
             letterPassword={letterPassword}
             digitPassword={digitPassword}
