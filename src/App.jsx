@@ -5,7 +5,7 @@ import Form from './components/Form';
 import PasswordTracker from './components/PasswordTracker';
 import { useEffect, useState } from 'react';
 import { findData, findDataOptions } from './utils/findData';
-import { extractCharactersBeforeFirstDigit } from './utils/checkFirstChar';
+import { checkFirstChars } from './utils/checkFirstChar';
 
 const StyledApp = styled.main`
   max-width: 50rem;
@@ -54,29 +54,21 @@ const App = () => {
       setDigitPassword(containsDigit.test(inputValue));
 
       if (inputValue.length >= 3) {
-        // Check if the entire password is an English word
-        const word = extractCharactersBeforeFirstDigit(inputValue);
-        console.log(word);
-        // const digitWord = await getEnglishWordCheck(word);
-        const isEnglishWord =
-          word.length >= 3
-            ? await getEnglishWordCheck(inputValue, signal)
-            : false;
-        console.log(isEnglishWord);
+        const wordBeforeDigit = checkFirstChars(inputValue);
 
-        // else if (digitWord) {
-        //   setWordCheckPassword(false);
-        // }
+        const [isEnglishWord, isWordBeforeDigitEnglish] = await Promise.all([
+          getEnglishWordCheck(inputValue, signal),
+          getEnglishWordCheck(wordBeforeDigit, signal),
+        ]);
 
-        if (isEnglishWord) {
-          // If the password starts with a valid English word, set wordCheckPassword to false
-          console.log('Setting wordCheckPassword to true');
+        if (
+          isEnglishWord ||
+          (isWordBeforeDigitEnglish && wordBeforeDigit.length >= 3)
+        ) {
+          console.log('Setting wordCheckPassword to false');
           setWordCheckPassword(false);
         } else {
-          // If the password doesn't start with a valid English word and doesn't contain a digit, set wordCheckPassword to true
-          console.log(
-            'Setting wordCheckPassword to false instead of true, it is checked'
-          );
+          console.log('Setting wordCheckPassword to true');
           setWordCheckPassword(true);
         }
       }
