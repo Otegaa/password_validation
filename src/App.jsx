@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { debounce } from 'lodash';
 import styled from 'styled-components';
 
 import GlobalStyles from './styles/GlobalStyles';
@@ -11,7 +12,7 @@ import { findData, findDataOptions } from './utils/findData';
 import { checkFirstChars } from './utils/checkFirstChar';
 
 const StyledApp = styled.main`
-  max-width: 50rem;
+  max-width: 100rem;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -19,13 +20,19 @@ const StyledApp = styled.main`
 `;
 
 const Container = styled.div`
+  width: 50rem;
   padding: 2rem;
   display: flex;
   gap: 2rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: blue;
+  background-color: #48735e;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.4);
+`;
+
+const Align = styled.div`
+  width: 70%;
 `;
 
 const App = () => {
@@ -34,10 +41,6 @@ const App = () => {
   const [digitPassword, setDigitPassword] = useState(false);
   const [wordCheckPassword, setWordCheckPassword] = useState(true);
   const [inputValue, setInputValue] = useState('');
-
-  // TODO
-  // State variable for unchecking the box
-  // Styling
 
   const getEnglishWordCheck = async (word, signal) => {
     const wordsApiUrl = `https://wordsapiv1.p.rapidapi.com/words/${word}/typeOf`;
@@ -50,7 +53,7 @@ const App = () => {
     const controller = new AbortController();
     const signal = controller.signal;
 
-    const validatePassword = async () => {
+    const validatePassword = debounce(async () => {
       // regex validations
       const lengthValid = /^(.{8,16})$/;
       const containsLetter = /[a-zA-Z]/;
@@ -72,7 +75,6 @@ const App = () => {
           getEnglishWordCheck(inputValue, signal),
           getEnglishWordCheck(wordBeforeDigit, signal),
         ]);
-        console.log(isEnglishWord, isWordBeforeDigitEnglish);
 
         if (
           isEnglishWord ||
@@ -83,7 +85,7 @@ const App = () => {
           setWordCheckPassword(true);
         }
       }
-    };
+    }, 500);
 
     validatePassword();
 
@@ -102,13 +104,15 @@ const App = () => {
       <StyledApp>
         <Container>
           <Heading />
-          <Form onValidate={handleValidatePassword} />
-          <PasswordTracker
-            lengthPassword={lengthPassword}
-            letterPassword={letterPassword}
-            digitPassword={digitPassword}
-            wordCheckPassword={wordCheckPassword}
-          />
+          <Align>
+            <Form onValidate={handleValidatePassword} />
+            <PasswordTracker
+              lengthPassword={lengthPassword}
+              letterPassword={letterPassword}
+              digitPassword={digitPassword}
+              wordCheckPassword={wordCheckPassword}
+            />
+          </Align>
           <Button
             inputValue={inputValue}
             lengthPassword={lengthPassword}

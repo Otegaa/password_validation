@@ -4,6 +4,7 @@ import { PiEyeSlash } from 'react-icons/pi';
 import { useState } from 'react';
 
 const StyledForm = styled.form`
+  width: 100%;
   margin-top: 1rem;
   position: relative;
 `;
@@ -14,6 +15,7 @@ const StyledInput = styled.input`
   font-size: 1.5rem;
   font-weight: 400;
   padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
   border-radius: 2px;
   background-color: #ffffff;
   border-bottom: 3px solid transparent;
@@ -23,8 +25,8 @@ const StyledInput = styled.input`
 
   &:focus {
     outline: none;
-    box-shadow: 0 1rem 2rem black;
-    border-bottom: 3px solid red;
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.4);
+    border-bottom: 3px solid #43a6c6;
   }
 
   &::placeholder {
@@ -38,6 +40,7 @@ const Icons = styled.div`
   position: absolute;
   top: 15px;
   right: 15px;
+  cursor: pointer;
 `;
 
 const Form = ({ onValidate }) => {

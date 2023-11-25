@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { ImCheckboxUnchecked } from 'react-icons/im';
 import { ImCheckboxChecked } from 'react-icons/im';
 
-const StyledTracker = styled.div``;
-
-const StyledList = styled.ul``;
+const StyledList = styled.ul`
+  list-style: none;
+`;
 
 const StyledParagraph = styled.p`
   color: #eee;
@@ -14,7 +14,7 @@ const StyledParagraph = styled.p`
 const StyledListItem = styled.li`
   display: flex;
   gap: 0.5rem;
-  ${({ $isValid }) => ($isValid ? 'color: green;' : 'color: #eee')}
+  ${({ $isValid }) => ($isValid ? 'color: #C0C0C0' : 'color: #eee')}
 `;
 
 const StyledIcons = styled.span`
@@ -29,7 +29,7 @@ const PasswordTracker = ({
   wordCheckPassword,
 }) => {
   return (
-    <StyledTracker>
+    <>
       <StyledParagraph>Your password must:</StyledParagraph>
       <StyledList>
         <StyledListItem $isValid={lengthPassword}>
@@ -61,7 +61,7 @@ const PasswordTracker = ({
           Not contain full English words
         </StyledListItem>
       </StyledList>
-    </StyledTracker>
+    </>
   );
 };
 export default PasswordTracker;
