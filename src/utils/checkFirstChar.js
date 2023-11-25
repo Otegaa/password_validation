@@ -8,4 +8,6 @@ export function checkFirstChars(password) {
     const charsBeforeDigit = password.split(/\d/)[0];
     return charsBeforeDigit;
   }
+  // if it does not contain any digit
+  return password;
 }

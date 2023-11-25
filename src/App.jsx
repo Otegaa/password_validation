@@ -35,6 +35,10 @@ const App = () => {
   const [wordCheckPassword, setWordCheckPassword] = useState(true);
   const [inputValue, setInputValue] = useState('');
 
+  // TODO
+  // State variable for unchecking the box
+  // Styling
+
   const getEnglishWordCheck = async (word, signal) => {
     const wordsApiUrl = `https://wordsapiv1.p.rapidapi.com/words/${word}/typeOf`;
     const data = await findData(wordsApiUrl, findDataOptions, signal);
@@ -56,6 +60,10 @@ const App = () => {
       setLetterPassword(containsLetter.test(inputValue));
       setDigitPassword(containsDigit.test(inputValue));
 
+      if (inputValue === '') {
+        setWordCheckPassword(false);
+      }
+
       if (inputValue.length >= 3) {
         // check if the input contains digit
         const wordBeforeDigit = checkFirstChars(inputValue);
@@ -64,6 +72,7 @@ const App = () => {
           getEnglishWordCheck(inputValue, signal),
           getEnglishWordCheck(wordBeforeDigit, signal),
         ]);
+        console.log(isEnglishWord, isWordBeforeDigitEnglish);
 
         if (
           isEnglishWord ||
@@ -73,10 +82,6 @@ const App = () => {
         } else {
           setWordCheckPassword(true);
         }
-      }
-
-      if (inputValue.length < 1) {
-        setWordCheckPassword(true);
       }
     };
 

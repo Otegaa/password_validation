@@ -7,6 +7,7 @@ export const findDataOptions = {
 };
 
 export const findData = async (url, options, signal) => {
+  console.log(url);
   try {
     const res = await fetch(url, {
       ...options,
