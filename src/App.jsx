@@ -7,8 +7,8 @@ import Form from './components/Form';
 import Button from './components/Button';
 import PasswordTracker from './components/PasswordTracker';
 
-import { findData, findDataOptions } from './utils/findData';
 import { checkChars } from './utils/checkChars';
+import { getEnglishWordCheck } from './utils/getEnglishWord.js';
 
 const StyledApp = styled.main`
   max-width: 100rem;
@@ -40,13 +40,6 @@ const App = () => {
   const [digitPassword, setDigitPassword] = useState(false);
   const [wordCheckPassword, setWordCheckPassword] = useState(false);
   const [inputValue, setInputValue] = useState('');
-
-  const getEnglishWordCheck = async (word, signal) => {
-    const wordsApiUrl = `https://wordsapiv1.p.rapidapi.com/words/${word}/typeOf`;
-    const data = await findData(wordsApiUrl, findDataOptions, signal);
-
-    return data;
-  };
 
   useEffect(() => {
     let controller = new AbortController();
