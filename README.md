@@ -68,6 +68,11 @@ Install this project's packages with:
 - This runs the application in the development mode
 - Open http://localhost:5173 to view it in the browser.
 
+### Test
+
+- npm run test
+- This runs the tests.
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 👥 Author <a name="author"></a>

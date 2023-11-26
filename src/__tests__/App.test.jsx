@@ -43,8 +43,8 @@ describe('check for letters', () => {
 });
 
 describe('check for english word in password', () => {
-  it('returns FALSE if full english word is in password', async () => {
-    const inputValue = 'hello8World';
+  it('returns FALSE if full english word is in NOT password', async () => {
+    const inputValue = 'hellyo8Woryld';
 
     const signal = new AbortController().signal;
 
