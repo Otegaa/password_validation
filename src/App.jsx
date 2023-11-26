@@ -41,47 +41,46 @@ const App = () => {
   const [wordCheckPassword, setWordCheckPassword] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
+  const validatePassword = async (inputValue, controller) => {
+    // regex validations
+    const lengthValid = /^(.{8,16})$/;
+    const containsLetter = /[a-zA-Z]/;
+    const containsDigit = /\d/;
+
+    setLengthPassword(lengthValid.test(inputValue));
+    setLetterPassword(containsLetter.test(inputValue));
+    setDigitPassword(containsDigit.test(inputValue));
+
+    if (inputValue === '') {
+      setWordCheckPassword(false);
+    }
+
+    if (inputValue.length >= 3) {
+      const englishFoundWord = checkChars(inputValue);
+      let isEnglishWord;
+
+      for (let word of englishFoundWord) {
+        const singleWord = word;
+        const result = await getEnglishWordCheck(singleWord, controller.signal);
+
+        isEnglishWord = result;
+
+        if (result) {
+          break;
+        }
+      }
+
+      setWordCheckPassword(!isEnglishWord);
+    } else if (inputValue.length > 0 && inputValue.length < 3) {
+      setWordCheckPassword(true);
+    }
+  };
+
   useEffect(() => {
     let controller = new AbortController();
-    const signal = controller.signal;
-
-    const validatePassword = async () => {
-      // regex validations
-      const lengthValid = /^(.{8,16})$/;
-      const containsLetter = /[a-zA-Z]/;
-      const containsDigit = /\d/;
-
-      setLengthPassword(lengthValid.test(inputValue));
-      setLetterPassword(containsLetter.test(inputValue));
-      setDigitPassword(containsDigit.test(inputValue));
-
-      if (inputValue === '') {
-        setWordCheckPassword(false);
-      }
-
-      if (inputValue.length >= 3) {
-        const englishFoundWord = checkChars(inputValue);
-        let isEnglishWord;
-
-        for (let word of englishFoundWord) {
-          const singleWord = word;
-          const result = await getEnglishWordCheck(singleWord, signal);
-
-          isEnglishWord = result;
-
-          if (result) {
-            break;
-          }
-        }
-
-        setWordCheckPassword(!isEnglishWord);
-      } else if (inputValue.length > 0 && inputValue.length < 3) {
-        setWordCheckPassword(true);
-      }
-    };
 
     setTimeout(function () {
-      validatePassword();
+      validatePassword(inputValue, controller);
     }, 700);
 
     return () => {
