@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { debounce } from 'lodash';
 import styled from 'styled-components';
 
 import GlobalStyles from './styles/GlobalStyles';
@@ -8,8 +7,8 @@ import Form from './components/Form';
 import Button from './components/Button';
 import PasswordTracker from './components/PasswordTracker';
 
-import { findData, findDataOptions } from './utils/findData';
-import { checkFirstChars } from './utils/checkFirstChar';
+import { checkChars } from './utils/checkChars';
+import { getEnglishWordCheck } from './utils/getEnglishWord.js';
 
 const StyledApp = styled.main`
   max-width: 100rem;
@@ -39,58 +38,53 @@ const App = () => {
   const [lengthPassword, setLengthPassword] = useState(false);
   const [letterPassword, setLetterPassword] = useState(false);
   const [digitPassword, setDigitPassword] = useState(false);
-  const [wordCheckPassword, setWordCheckPassword] = useState(true);
+  const [wordCheckPassword, setWordCheckPassword] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
-  const getEnglishWordCheck = async (word, signal) => {
-    const wordsApiUrl = `https://wordsapiv1.p.rapidapi.com/words/${word}/typeOf`;
-    const data = await findData(wordsApiUrl, findDataOptions, signal);
+  const validatePassword = async (inputValue, controller) => {
+    // regex validations
+    const lengthValid = /^(.{8,16})$/;
+    const containsLetter = /[a-zA-Z]/;
+    const containsDigit = /\d/;
 
-    return data;
+    setLengthPassword(lengthValid.test(inputValue));
+    setLetterPassword(containsLetter.test(inputValue));
+    setDigitPassword(containsDigit.test(inputValue));
+
+    if (inputValue === '') {
+      setWordCheckPassword(false);
+    }
+
+    if (inputValue.length >= 3) {
+      const englishFoundWord = checkChars(inputValue);
+      let isEnglishWord;
+
+      for (let word of englishFoundWord) {
+        const singleWord = word;
+        const result = await getEnglishWordCheck(singleWord, controller.signal);
+
+        isEnglishWord = result;
+
+        if (result) {
+          break;
+        }
+      }
+
+      setWordCheckPassword(!isEnglishWord);
+    } else if (inputValue.length > 0 && inputValue.length < 3) {
+      setWordCheckPassword(true);
+    }
   };
 
   useEffect(() => {
-    const controller = new AbortController();
-    const signal = controller.signal;
+    let controller = new AbortController();
 
-    const validatePassword = debounce(async () => {
-      // regex validations
-      const lengthValid = /^(.{8,16})$/;
-      const containsLetter = /[a-zA-Z]/;
-      const containsDigit = /\d/;
-
-      setLengthPassword(lengthValid.test(inputValue));
-      setLetterPassword(containsLetter.test(inputValue));
-      setDigitPassword(containsDigit.test(inputValue));
-
-      if (inputValue === '') {
-        setWordCheckPassword(false);
-      }
-
-      if (inputValue.length >= 3) {
-        // check if the input contains digit
-        const wordBeforeDigit = checkFirstChars(inputValue);
-
-        const [isEnglishWord, isWordBeforeDigitEnglish] = await Promise.all([
-          getEnglishWordCheck(inputValue, signal),
-          getEnglishWordCheck(wordBeforeDigit, signal),
-        ]);
-
-        if (
-          isEnglishWord ||
-          (isWordBeforeDigitEnglish && wordBeforeDigit.length >= 3)
-        ) {
-          setWordCheckPassword(false);
-        } else {
-          setWordCheckPassword(true);
-        }
-      }
-    }, 500);
-
-    validatePassword();
+    setTimeout(function () {
+      validatePassword(inputValue, controller);
+    }, 700);
 
     return () => {
-      controller.abort();
+      if (controller) controller.abort('Input updated');
     };
   }, [inputValue]);
 

@@ -14,13 +14,9 @@ export const findData = async (url, options, signal) => {
     });
     const data = await res.json();
 
-    if (data.success === false) {
-      return false;
-    } else {
-      return true;
-    }
+    if (data.word) return true;
+    return data.success;
   } catch (error) {
-    console.error('Error checking word:', error);
     return false;
   }
 };

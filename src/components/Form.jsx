@@ -1,7 +1,6 @@
-import styled from 'styled-components';
-import { PiEyeLight } from 'react-icons/pi';
-import { PiEyeSlash } from 'react-icons/pi';
 import { useState } from 'react';
+import styled from 'styled-components';
+import { PiEyeLight, PiEyeSlash } from 'react-icons/pi';
 
 const StyledForm = styled.form`
   width: 100%;
@@ -51,18 +50,16 @@ const Form = ({ onValidate }) => {
   };
 
   return (
-    <>
-      <StyledForm>
-        <StyledInput
-          type={!showPassword ? 'password' : 'text'}
-          placeholder="Input your password"
-          onInput={(e) => onValidate(e.target.value)}
-        />
-        <Icons onClick={handleShowPassword}>
-          {showPassword ? <PiEyeLight /> : <PiEyeSlash />}
-        </Icons>
-      </StyledForm>
-    </>
+    <StyledForm>
+      <StyledInput
+        type={!showPassword ? 'password' : 'text'}
+        placeholder="Input your password"
+        onInput={(e) => onValidate(e.target.value)}
+      />
+      <Icons onClick={handleShowPassword}>
+        {showPassword ? <PiEyeLight /> : <PiEyeSlash />}
+      </Icons>
+    </StyledForm>
   );
 };
 export default Form;

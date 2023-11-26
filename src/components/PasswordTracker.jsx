@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { ImCheckboxUnchecked } from 'react-icons/im';
-import { ImCheckboxChecked } from 'react-icons/im';
+import { ImCheckboxUnchecked, ImCheckboxChecked } from 'react-icons/im';
 
 const StyledList = styled.ul`
   list-style: none;
@@ -52,10 +51,10 @@ const PasswordTracker = ({
         </StyledListItem>
         <StyledListItem $isValid={wordCheckPassword}>
           <StyledIcons>
-            {!wordCheckPassword ? (
-              <ImCheckboxUnchecked />
-            ) : (
+            {wordCheckPassword ? (
               <ImCheckboxChecked />
+            ) : (
+              <ImCheckboxUnchecked />
             )}
           </StyledIcons>
           Not contain full English words

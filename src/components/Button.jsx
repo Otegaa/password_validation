@@ -1,4 +1,3 @@
-import { useCopyToClipboard } from 'usehooks-ts';
 import styled from 'styled-components';
 
 const StyledButton = styled.button`
@@ -25,13 +24,12 @@ const Button = ({
   digitPassword,
   wordCheckPassword,
 }) => {
-  const [_, copy] = useCopyToClipboard();
   const isValid =
     lengthPassword && letterPassword && digitPassword && wordCheckPassword;
 
   const handleCopy = () => {
     if (isValid) {
-      copy(inputValue);
+      navigator.clipboard.writeText(inputValue);
     }
   };
 
